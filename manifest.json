@@ -1,0 +1,38 @@
+{
+  "name": "Auth Token Copier",
+  "description": "Copies auth token from network header and stores it in local storage.",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "96": "icon.png",
+    "128": "icon.png"
+  },
+  "permissions": [
+    "storage",
+    "webRequest",
+    "tabs",
+    "scripting",
+    "alarms",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "sw.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "js": ["browser-polyfill.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Auth Token Copier</title>
+    <meta charset="UTF-8">
+    <link href="fa/css/fontawesome.min.css" rel="stylesheet">
+    <link href="fa/css/regular.min.css" rel="stylesheet">
+    <link href="fa/css/solid.min.css" rel="stylesheet">
+    <style>
+      @font-face {
+        font-family: "Inter";
+        src: url("./InterVariable.ttf") format("truetype");
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      body {
+        margin: 8px;
+        width: 400px;
+        min-height: 200px;
+        background: #FFF;
+        font: 16px "Inter", sans-serif;
+        /* O digits, slashed zero, simple u, single-story a */
+        font-feature-settings: "ss01", "zero", "cv06", "cv11";
+      }
+      .off {
+        background: #FFDDDD;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0;
+      }
+      button {
+        padding: 5px 10px;
+        font: inherit;
+        background: #EEE;
+        border: 1px solid #C0C0C0;
+        border-radius: 8px;
+        outline: none;
+        text-align: center;
+
+        &:disabled {
+          background: #EEE !important;
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+        &:hover {
+          background: #DDD;
+        }
+        &:active {
+          background: #CCC;
+        }
+      }
+      input {
+        padding: 5px;
+        font: inherit;
+        background: #FFF;
+        border: 1px solid #AAA;
+        border-radius: 8px;
+        outline: none;
+      }
+      #ext-status {
+        font-weight: bold;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+      }
+      .col {
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="main-page" class="col">
+      <div class="row">
+        <h1 style="flex: 1;"><i class="fa-solid fa-key"></i> Auth Token Copier</h1>
+        <div id="ext-status" style="color: #008000;">ON</div>
+        <button id="mode-btn"><i class="fa-solid fa-power-off"></i> Mode</button>
+      </div>
+      <div class="col">
+        <span><code>Authentication</code> header of </span>
+        <input id="src-url" type="url" placeholder="Source URL">
+      </div>
+      <div style="text-align: center; font-size: 24px;"><i class="fa-solid fa-arrow-down"></i></div>
+      <div class="col">
+        <span><code>localStorage</code> of </span>
+        <input id="dest-url" type="url" placeholder="Destination URL">
+      </div>
+      <div class="row">
+        <button id="read-btn" style="flex: 1;"><i class="fa-solid fa-arrow-up" style="transform: rotate(45deg);"></i> Read</button>
+        <button id="write-btn" style="flex: 1;"><i class="fa-solid fa-arrow-down" style="transform: rotate(-45deg);"></i> Write</button>
+        <button id="copy-btn" style="flex: 1;"><i class="fa-regular fa-copy"></i> Copy</button>
+      </div>
+    </div>
+    <script src="popup.js" type="module"></script>
+  </body>
+</html>
