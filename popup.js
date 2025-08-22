@@ -12,6 +12,7 @@ function setMode(mode) {
   else {
     browser.storage.local.set({ mode: "off" });
     document.getElementById("ext-status").innerHTML = "OFF";
+    browser.runtime.sendMessage({ command: "reg-listener" });
   }
 
   const isOff = (mode === "off");
@@ -50,7 +51,19 @@ document.getElementById("src-url").addEventListener("input", async event => {
 document.getElementById("dest-url").addEventListener("input", async event => {
   const destUrl = event.target.value;
   await browser.storage.local.set({ destUrl });
-  browser.runtime.sendMessage({ command: "reg-listener" });
+});
+
+document.getElementById("dest-url").addEventListener("blur", async event => {
+  browser.runtime.sendMessage({ command: "update-lstor" });
+});
+
+document.getElementById("lstor-key").addEventListener("input", async event => {
+  const lStorKey = event.target.value;
+  await browser.storage.local.set({ lStorKey });
+});
+
+document.getElementById("lstor-key").addEventListener("blur", async event => {
+  browser.runtime.sendMessage({ command: "update-lstor" });
 });
 
 document.getElementById("regex-find").addEventListener("input", async event => {
@@ -70,9 +83,18 @@ document.getElementById("token").addEventListener("input", async event => {
   await browser.storage.local.set({ token });
 });
 
+document.getElementById("write-btn").addEventListener("click", async () => {
+  browser.runtime.sendMessage({ command: "update-lstor" });
+});
+
 document.getElementById("copy-btn").addEventListener("click", async () => {
   const token = document.getElementById("token").value;
   await navigator.clipboard.writeText(token);
+});
+
+document.getElementById("clear-btn").addEventListener("click", async () => {
+  document.getElementById("token").value = "";
+  await browser.storage.local.set({ token: "" });
 });
 
 document.getElementById("about-btn").addEventListener("click", () => {
@@ -86,10 +108,11 @@ document.getElementById("about-back-btn").addEventListener("click", () => {
 });
 
 globalThis.addEventListener("load", async () => {
-  const { srcUrl, destUrl, regexFind, regexReplace, token, mode } = await browser.storage.local.get();
+  const { srcUrl, destUrl, lStorKey, regexFind, regexReplace, token, mode } = await browser.storage.local.get();
   setMode(mode);
   document.getElementById("src-url").value = srcUrl || "";
   document.getElementById("dest-url").value = destUrl || "";
+  document.getElementById("lstor-key").value = lStorKey || "token";
   document.getElementById("regex-find").value = regexFind || "";
   document.getElementById("regex-replace").value = regexReplace || "";
   document.getElementById("token").value = token || "";
@@ -100,5 +123,6 @@ browser.runtime.onMessage.addListener(async message => {
     const { token } = await browser.storage.local.get("token");
     document.getElementById("token").value = token || "";
     document.getElementById("msg").innerText = "Token updated @ " + new Date().toLocaleTimeString();
+    document.getElementById("msg").style.removeProperty("color");
   }
 });

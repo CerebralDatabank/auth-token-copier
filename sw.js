@@ -8,26 +8,31 @@ async function saveToken(details) {
     : origToken;
   browser.storage.local.set({ token, origToken });
   browser.runtime.sendMessage({ command: "update-token-ui" });
+  const tabs = await browser.tabs.query({});
+  for (const tab of tabs) {
+    browser.tabs.sendMessage(tab.id, { command: "update-lstor" });
+  }
 }
 
 async function regListener() {
-  const { srcUrl, destUrl, mode } = await browser.storage.local.get();
+  const { srcUrl, mode } = await browser.storage.local.get();
   browser.webRequest.onBeforeSendHeaders.removeListener(saveToken);
   if (mode === "off") return;
   if (srcUrl) {
     browser.webRequest.onSendHeaders.addListener(
       saveToken,
-      { urls: [""] },
+      { urls: [srcUrl] },
       ["requestHeaders"]
     );
   }
 }
     
 browser.runtime.onInstalled.addListener(async details => {
-  const { srcUrl, destUrl, regexFind, regexReplace, token, origToken, mode } = await browser.storage.local.get();
+  const { srcUrl, destUrl, lStorKey, regexFind, regexReplace, token, origToken, mode } = await browser.storage.local.get();
   await browser.storage.local.set({
     srcUrl: srcUrl || "",
     destUrl: destUrl || "",
+    lStorKey: lStorKey || "token",
     regexFind: regexFind || "",
     regexReplace: regexReplace || "",
     token: token || "",

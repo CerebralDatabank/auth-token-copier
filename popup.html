@@ -25,8 +25,9 @@
         background: #FFF;
         color: #222;
         font: 16px "Inter", sans-serif;
-        /* O digits, slashed zero, simple u, single-story a */
+        /* Open digits, slashed zero, simple u, single-story a */
         font-feature-settings: "ss01", "zero", "cv06", "cv11";
+        user-select: none;
       }
       .off {
         background: #FDD;
@@ -83,7 +84,7 @@
       }
       .col {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         flex-direction: column;
       }
     </style>
@@ -96,12 +97,12 @@
         <button id="mode-btn"><i class="fa-solid fa-power-off"></i> Mode</button>
       </div>
       <div class="col">
-        <span><code>Authentication</code> header of </span>
+        <span><code>Authentication</code> header of</span>
         <input id="src-url" type="url" placeholder="Source URL">
       </div>
       <div style="text-align: center; font-size: 24px;"><i class="fa-solid fa-arrow-down"></i></div>
       <div class="col">
-        <span>Regex processing (optional):</span>
+        <span>Regex processing (optional)</span>
         <div class="row">
           <input id="regex-find" type="text" spellcheck="false" placeholder="Find (e.g. (.*))" size="1" style="flex: 1;">
           <input id="regex-replace" type="text" spellcheck="false" placeholder="Replace (e.g. &quot;$1&quot;)" size="1" style="flex: 1;">
@@ -109,8 +110,12 @@
       </div>
       <div style="text-align: center; font-size: 24px;"><i class="fa-solid fa-arrow-down"></i></div>
       <div class="col">
-        <span><code>localStorage</code> of </span>
+        <span><code>localStorage</code> of</span>
         <input id="dest-url" type="url" placeholder="Destination URL">
+      </div>
+      <div class="col">
+        <span>with key</span>
+        <input id="lstor-key" type="text" spellcheck="false"" placeholder="Destination localStorage Key">
       </div>
       <hr style="width: 100%; border: none; border-top: 2px solid currentColor; border-radius: 1px;">
       <textarea id="token" style="width: 100%; height: 100px; box-sizing: border-box; resize: none;" placeholder="Token"></textarea>
@@ -133,9 +138,9 @@
         <ul>
           <li><span style="font-weight: bold; color: #A00;">OFF</span>: Extension does nothing automatically. You can still manually paste in a token and write it to the destination's local storage by clicking Write.</li>
           <li><span style="font-weight: bold; color: #0A0;">MANUAL</span>: Extension monitors network requests and keeps the token field updated with the latest token. You must manually click Write to write it to local storage.</li>
-          <li><span style="font-weight: bold; color: #0A0;">AUTO</span>: Same as above, except extension also writes tokens to local storage automatically.</li>
+          <li><span style="font-weight: bold; color: #0A0;">AUTO</span>: Same as above, except extension also writes tokens to local storage automatically as they are obtained.</li>
         </ul>
-        <p>Source code: <a href="https://github.com/CerebralDatabank/auth-token-copier" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> auth-token-copier</a></p>
+        <p>v1.0.0 &middot; Source code: <a href="https://github.com/CerebralDatabank/auth-token-copier" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> auth-token-copier</a></p>
       </div>
     </div>
     <script src="popup.js" type="module"></script>
