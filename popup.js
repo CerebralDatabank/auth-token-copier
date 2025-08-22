@@ -17,7 +17,7 @@ function setMode(mode) {
   const isOff = (mode === "off");
   document.body.classList.toggle("off", isOff);
   document.getElementById("ext-status").style.color = isOff ? "#A00" : "#0A0";
-  ["read-btn", "write-btn", "copy-btn"].forEach(id => document.getElementById(id).disabled = isOff);
+  document.getElementById("token").disabled = !isOff;
 }
 
 function updateMode(mode) {
@@ -26,24 +26,79 @@ function updateMode(mode) {
   else setMode("off");
 }
 
+async function applyRegex() {
+  const { origToken, regexFind, regexReplace, mode } = await browser.storage.local.get(["origToken", "regexFind", "regexReplace", "mode"]);
+  if (mode === "off") return;
+  const token = regexFind
+    ? origToken.replace(new RegExp(regexFind), regexReplace)
+    : origToken;
+  document.getElementById("token").value = token;
+  await browser.storage.local.set({ token });
+}
+
 document.getElementById("mode-btn").addEventListener("click", async () => {
   const { mode } = await browser.storage.local.get("mode");
   updateMode(mode);
 });
 
-document.getElementById("src-url").addEventListener("input", async (event) => {
+document.getElementById("src-url").addEventListener("input", async event => {
   const srcUrl = event.target.value;
   await browser.storage.local.set({ srcUrl });
+  browser.runtime.sendMessage({ command: "reg-listener" });
 });
 
-document.getElementById("dest-url").addEventListener("input", async (event) => {
+document.getElementById("dest-url").addEventListener("input", async event => {
   const destUrl = event.target.value;
   await browser.storage.local.set({ destUrl });
+  browser.runtime.sendMessage({ command: "reg-listener" });
+});
+
+document.getElementById("regex-find").addEventListener("input", async event => {
+  const regexFind = event.target.value;
+  await browser.storage.local.set({ regexFind });
+  applyRegex();
+});
+
+document.getElementById("regex-replace").addEventListener("input", async event => {
+  const regexReplace = event.target.value;
+  await browser.storage.local.set({ regexReplace });
+  applyRegex();
+});
+
+document.getElementById("token").addEventListener("input", async event => {
+  const token = event.target.value;
+  await browser.storage.local.set({ token });
+});
+
+document.getElementById("copy-btn").addEventListener("click", async () => {
+  const token = document.getElementById("token").value;
+  await navigator.clipboard.writeText(token);
+});
+
+document.getElementById("about-btn").addEventListener("click", () => {
+  document.getElementById("main-page").style.display = "none";
+  document.getElementById("about-page").style.display = "flex";
+});
+
+document.getElementById("about-back-btn").addEventListener("click", () => {
+  document.getElementById("main-page").style.display = "flex";
+  document.getElementById("about-page").style.display = "none";
 });
 
 globalThis.addEventListener("load", async () => {
-  const storage = await browser.storage.local.get();
-  setMode(storage.mode);
-  document.getElementById("src-url").value = storage.srcUrl || "";
-  document.getElementById("dest-url").value = storage.dstUrl || "";
+  const { srcUrl, destUrl, regexFind, regexReplace, token, mode } = await browser.storage.local.get();
+  setMode(mode);
+  document.getElementById("src-url").value = srcUrl || "";
+  document.getElementById("dest-url").value = destUrl || "";
+  document.getElementById("regex-find").value = regexFind || "";
+  document.getElementById("regex-replace").value = regexReplace || "";
+  document.getElementById("token").value = token || "";
+});
+
+browser.runtime.onMessage.addListener(async message => {
+  if (message.command === "update-token-ui") {
+    const { token } = await browser.storage.local.get("token");
+    document.getElementById("token").value = token || "";
+    document.getElementById("msg").innerText = "Token updated @ " + new Date().toLocaleTimeString();
+  }
 });
