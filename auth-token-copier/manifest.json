@@ -1,7 +1,7 @@
 {
   "name": "Auth Token Copier",
   "description": "Copies auth token from network header and stores it in local storage.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 3,
   "icons": {
     "16": "icon.png",
