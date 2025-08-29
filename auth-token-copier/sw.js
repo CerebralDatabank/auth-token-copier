@@ -1,7 +1,8 @@
 import "./browser-polyfill.min.js";
 
 async function saveToken(details) {
-  const origToken = details.requestHeaders.find(header => header.name.toLowerCase() === "authorization")?.value.replace(/^Bearer /, "") || "";
+  const origToken = details.requestHeaders.find(header => header.name.toLowerCase() === "authorization")?.value.replace(/^Bearer /, "");
+  if (origToken === undefined) return;
   const { regexFind, regexReplace } = await browser.storage.local.get(["regexFind", "regexReplace"]);
   const token = regexFind
     ? origToken.replace(new RegExp(regexFind), regexReplace)
@@ -46,4 +47,4 @@ browser.runtime.onMessage.addListener(async message => {
   return true;
 });
 
-
+regListener();

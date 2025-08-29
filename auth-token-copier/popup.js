@@ -37,6 +37,13 @@ async function applyRegex() {
   await browser.storage.local.set({ token });
 }
 
+async function updateLstor() {
+  const tabs = await browser.tabs.query({});
+  for (const tab of tabs) {
+    browser.tabs.sendMessage(tab.id, { command: "update-lstor" });
+  }
+}
+
 document.getElementById("mode-btn").addEventListener("click", async () => {
   const { mode } = await browser.storage.local.get("mode");
   updateMode(mode);
@@ -54,7 +61,7 @@ document.getElementById("dest-url").addEventListener("input", async event => {
 });
 
 document.getElementById("dest-url").addEventListener("blur", async event => {
-  browser.runtime.sendMessage({ command: "update-lstor" });
+  updateLstor();
 });
 
 document.getElementById("lstor-key").addEventListener("input", async event => {
@@ -63,7 +70,7 @@ document.getElementById("lstor-key").addEventListener("input", async event => {
 });
 
 document.getElementById("lstor-key").addEventListener("blur", async event => {
-  browser.runtime.sendMessage({ command: "update-lstor" });
+  updateLstor();
 });
 
 document.getElementById("regex-find").addEventListener("input", async event => {
@@ -84,7 +91,7 @@ document.getElementById("token").addEventListener("input", async event => {
 });
 
 document.getElementById("write-btn").addEventListener("click", async () => {
-  browser.runtime.sendMessage({ command: "update-lstor" });
+  updateLstor();
 });
 
 document.getElementById("copy-btn").addEventListener("click", async () => {
